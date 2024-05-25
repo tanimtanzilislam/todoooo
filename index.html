@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do list</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="todo-app">
+        <h2>To-do list <img src="./img/icon.png" ></h2>
+
+        <div class="row">
+            <input type="text" id="input-box" placeholder="Add your Task">
+            <button id="add-task-btn">Add Task</button>
+            <button id="delete-all-btn">Delete All Tasks</button> <!-- New button added -->
+        </div>
+    </div>
+
+    <ul id="list-container">
+        <!-- List items will be added here -->
+    </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let listContainer = document.getElementById('list-container');
+            let inputBox = document.getElementById('input-box');
+            let addTaskButton = document.getElementById('add-task-btn');
+            let deleteAllButton = document.getElementById('delete-all-btn'); // New button reference
+
+            addTaskButton.addEventListener('click', addTask);
+            deleteAllButton.addEventListener('click', deleteAllTasks); // Event listener for delete all button
+
+            function addTask() {
+                if (inputBox.value.trim() === '') {
+                    alert('Add your Task');
+                } else {
+                    let task = document.createElement('li');
+                    task.textContent = inputBox.value;
+                    listContainer.appendChild(task);
+
+                    let span = document.createElement('span');
+                    span.textContent = '\u00D7';
+                    task.appendChild(span);
+                }
+
+                inputBox.value = '';
+                saveData();
+            }
+
+            function deleteAllTasks() { // Function to delete all tasks
+                listContainer.innerHTML = ''; // Remove all tasks from the container
+                saveData(); // Save the updated data (empty list)
+            }
+
+            listContainer.addEventListener('click', (el) => {
+                if (el.target.tagName === 'LI') {
+                    el.target.classList.toggle('checked'); // Mark as done
+                    saveData();
+                } else if (el.target.tagName === 'SPAN') {
+                    el.target.parentNode.remove();
+                    saveData();
+                }
+            });
+
+            function saveData() {
+                localStorage.setItem("tasks", listContainer.innerHTML);
+            }
+
+            function showData() {
+                listContainer.innerHTML = localStorage.getItem('tasks');
+            }
+
+            showData();
+        });
+    </script>
+</body>
+</html>
